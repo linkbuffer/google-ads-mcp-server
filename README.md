@@ -18,7 +18,7 @@ For a simpler setup experience, we offer ready-to-use installers:
 
 ## Join our community for help and updates
 
-👉 **Slack Community -** [AI in Ads](https://join.slack.com/t/ai-in-ads/shared_invite/zt-36hntbyf8-FSFixmwLb9mtEzVZhsToJQ)
+👉 **Slack Community -** [AI in Ads](https://join.slack.com/t/ai-in-ads/shared_invite/zt-3f17k0kwl-kJskxR0FtcKJZhEYjc4X_A)
 
 ## Try Facebook ads mcp server also
 
