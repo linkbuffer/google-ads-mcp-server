@@ -1,6 +1,62 @@
+# ============================================================
+# Railway credentials bootstrap
+# Writes client_secret.json + google_ads_token.json from env vars
+# so the existing oauth/google_auth.py works on Railway with no edits.
+# Must run BEFORE oauth.google_auth is imported.
+# ============================================================
+import os
+import json
+
+def _bootstrap_google_ads_credentials():
+    """Build OAuth credential files from Railway env vars at startup."""
+    client_id = os.environ.get("GOOGLE_ADS_CLIENT_ID")
+    client_secret = os.environ.get("GOOGLE_ADS_CLIENT_SECRET")
+    refresh_token = os.environ.get("GOOGLE_ADS_REFRESH_TOKEN")
+
+    # Only bootstrap if all three are present (lets local --stdio dev keep working)
+    if not (client_id and client_secret and refresh_token):
+        return
+
+    creds_dir = "/tmp/gads_creds"
+    os.makedirs(creds_dir, exist_ok=True)
+
+    client_secret_path = os.path.join(creds_dir, "client_secret.json")
+    token_path = os.path.join(creds_dir, "google_ads_token.json")
+
+    # client_secret.json — same format Google Cloud Console downloads
+    client_secret_data = {
+        "installed": {
+            "client_id": client_id,
+            "client_secret": client_secret,
+            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+            "token_uri": "https://oauth2.googleapis.com/token",
+            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+            "redirect_uris": ["http://localhost"]
+        }
+    }
+    with open(client_secret_path, "w") as f:
+        json.dump(client_secret_data, f)
+
+    # google_ads_token.json — pre-seeded so the OAuth flow never has to launch a browser
+    token_data = {
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "refresh_token": refresh_token,
+        "token": None,
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "scopes": ["https://www.googleapis.com/auth/adwords"]
+    }
+    with open(token_path, "w") as f:
+        json.dump(token_data, f)
+
+    # Point google_auth.py at our generated client_secret.json
+    os.environ["GOOGLE_ADS_OAUTH_CONFIG_PATH"] = client_secret_path
+
+_bootstrap_google_ads_credentials()
+# ============================================================
+
 from fastmcp import FastMCP, Context
 from typing import Any, Dict, List, Optional
-import os
 import logging
 import requests
 
