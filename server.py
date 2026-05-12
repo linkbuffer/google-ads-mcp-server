@@ -285,7 +285,7 @@ def run_keyword_planner(
         headers = get_headers_with_auto_token()
         
         formatted_customer_id = format_customer_id(customer_id)
-        url = f"https://googleads.googleapis.com/v19/customers/{formatted_customer_id}:generateKeywordIdeas"
+        url = f"https://googleads.googleapis.com/v23/customers/{formatted_customer_id}:generateKeywordIdeas"
         
         if manager_id:
             headers['login-customer-id'] = format_customer_id(manager_id)
