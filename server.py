@@ -454,12 +454,13 @@ def gaql_reference() -> str:
 
 if __name__ == "__main__":
     import sys
-    
-    # Check command line arguments for transport mode
-    if "--http" in sys.argv:
-        logger.info("Starting with HTTP transport on http://127.0.0.1:8000/mcp")
-        mcp.run(transport="streamable-http", host="127.0.0.1", port=8000, path="/mcp")
-    else:
-        # Default to STDIO for Claude Desktop compatibility
+
+    # Railway / cloud hosting: default to HTTP transport.
+    # Use --stdio flag for local Claude Desktop usage.
+    if "--stdio" in sys.argv:
         logger.info("Starting with STDIO transport for Claude Desktop")
         mcp.run(transport="stdio")
+    else:
+        port = int(os.environ.get("PORT", 8000))
+        logger.info(f"Starting with HTTP transport on 0.0.0.0:{port} (path /mcp) for Railway")
+        mcp.run(transport="streamable-http", host="0.0.0.0", port=port, path="/mcp")
