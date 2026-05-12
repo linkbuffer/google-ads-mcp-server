@@ -170,7 +170,7 @@ def list_accounts(ctx: Context = None) -> Dict[str, Any]:
         headers = get_headers_with_auto_token()
         
         # Fetch top-level accessible customers
-        url = "https://googleads.googleapis.com/v19/customers:listAccessibleCustomers"
+        url = "https://googleads.googleapis.com/v23/customers:listAccessibleCustomers"
         resp = requests.get(url, headers=headers)
         if not resp.ok:
             if ctx:
